@@ -4,7 +4,6 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-
 from database import (
     initialize_database,
     get_connection,
@@ -12,13 +11,15 @@ from database import (
     get_agent
 )
 
-
 from scheduler import start_scheduler
+
+
 app = FastAPI(
     title="Autonomous AI Creator",
     description="Autonomous AI Security content agent",
     version="1.0.0"
 )
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,6 +31,9 @@ app.add_middleware(
 
 
 AGENT_ID = "e3345157-eeb8-4b40-9a46-1b0900db5573"
+
+
+# Dashboard file location
 BASE_DIR = Path(__file__).resolve().parent
 DASHBOARD_FILE = BASE_DIR / "dashboard.html"
 
@@ -37,11 +41,24 @@ DASHBOARD_FILE = BASE_DIR / "dashboard.html"
 # Initialize database when API starts
 initialize_database()
 
+
 # Start autonomous background scheduler
 start_scheduler()
- @app.get("/")
+
+
+# ---------------------------------------------------------
+# MAIN DASHBOARD
+# ---------------------------------------------------------
+
+@app.get("/")
 def home():
     return FileResponse(DASHBOARD_FILE)
+
+
+# ---------------------------------------------------------
+# AGENT INFORMATION
+# ---------------------------------------------------------
+
 @app.get("/api/agent")
 def agent_info():
 
@@ -61,6 +78,10 @@ def agent_info():
         "createdAt": agent["created_at"]
     }
 
+
+# ---------------------------------------------------------
+# AGENT FEED
+# ---------------------------------------------------------
 
 @app.get("/api/agent/feed")
 def agent_feed():
@@ -84,6 +105,10 @@ def agent_feed():
     }
 
 
+# ---------------------------------------------------------
+# PUBLISHED POSTS
+# ---------------------------------------------------------
+
 @app.get("/api/agent/posts")
 def agent_posts():
 
@@ -99,6 +124,11 @@ def agent_posts():
         }
         for post in posts
     ]
+
+
+# ---------------------------------------------------------
+# TOPICS
+# ---------------------------------------------------------
 
 @app.get("/api/agent/topics")
 def agent_topics():
