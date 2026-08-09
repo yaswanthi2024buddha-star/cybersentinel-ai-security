@@ -37,13 +37,25 @@ BASE_DIR = Path(__file__).resolve().parent
 DASHBOARD_FILE = BASE_DIR / "dashboard.html"
 
 
-# Initialize database when API starts
+ # Initialize database when API starts
 initialize_database()
 
+# Create one initial post if none exists
+from datetime import datetime
+from uuid import uuid4
+
+if not get_posts(AGENT_ID):
+    save_post(
+        str(uuid4()),
+        AGENT_ID,
+        datetime.utcnow().isoformat(),
+        "CyberSentinel detected an important AI security trend: autonomous AI systems require continuous monitoring, secure API credentials, and validation of generated content.",
+        "This topic is relevant to AI security because autonomous agents depend on external APIs and generate content that must be continuously monitored and validated.",
+        "https://owasp.org/www-project-top-10-for-large-language-model-applications/"
+    )
 
 # Start autonomous background scheduler
 start_scheduler()
-
 
 # ---------------------------------------------------------
 # MAIN DASHBOARD
