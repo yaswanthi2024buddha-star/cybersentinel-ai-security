@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,6 +30,8 @@ app.add_middleware(
 
 
 AGENT_ID = "e3345157-eeb8-4b40-9a46-1b0900db5573"
+BASE_DIR = Path(__file__).resolve().parent
+DASHBOARD_FILE = BASE_DIR / "dashboard.html"
 
 
 # Initialize database when API starts
@@ -37,7 +41,7 @@ initialize_database()
 start_scheduler()
  @app.get("/")
 def home():
-    return FileResponse("dashboard.html")
+    return FileResponse(DASHBOARD_FILE)
 @app.get("/api/agent")
 def agent_info():
 
