@@ -6,11 +6,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from database import (
     initialize_database,
-    get_connection,
     get_posts,
-    get_agent
+    get_agent,
+    save_post
 )
-
 from scheduler import start_scheduler
 
 
