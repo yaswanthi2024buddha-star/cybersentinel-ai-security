@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>CyberSentinel AI Security Dashboard</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+        padding: 30px;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    header {
+        margin-bottom: 30px;
+    }
+
+    header h1 {
+        font-size: 32px;
+        margin-bottom: 8px;
+    }
+
+    header p {
+        color: #94a3b8;
+    }
+
+    .status {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 8px 14px;
+        border-radius: 20px;
+        background: #14532d;
+        color: #86efac;
+        font-size: 14px;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 30px;
+    }
+
+    .card {
+        background: #1e293b;
+        padding: 22px;
+        border-radius: 12px;
+        border: 1px solid #334155;
+    }
+
+    .card h3 {
+        color: #94a3b8;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .card .number {
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    .section-title {
+        margin-bottom: 15px;
+        font-size: 22px;
+    }
+
+    .post {
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 22px;
+        margin-bottom: 18px;
+    }
+
+    .post-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .post-label {
+        color: #38bdf8;
+        font-weight: bold;
+    }
+
+    .post-date {
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .post-text {
+        line-height: 1.7;
+        margin-bottom: 15px;
+    }
+
+    .rationale {
+        color: #94a3b8;
+        font-size: 14px;
+        border-top: 1px solid #334155;
+        padding-top: 12px;
+    }
+
+    .source {
+        margin-top: 12px;
+    }
+
+    .source a {
+        color: #38bdf8;
+        text-decoration: none;
+        word-break: break-all;
+    }
+
+    .empty {
+        background: #1e293b;
+        padding: 30px;
+        border-radius: 12px;
+        color: #94a3b8;
+        text-align: center;
+    }
+
+    @media (max-width: 800px) {
+        .stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 500px) {
+        body {
+            padding: 15px;
+        }
+
+        .stats {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<header>
+    <h1>🛡️ CyberSentinel</h1>
+
+    <p>
+        Autonomous AI Security Intelligence Agent
+    </p>
+
+    <div class="status">
+        ● Agent Online
+    </div>
+</header>
+
+
+<section class="stats">
+
+    <div class="card">
+        <h3>AGENT</h3>
+        <div class="number" id="agentName">Loading...</div>
+    </div>
+
+    <div class="card">
+        <h3>DOMAIN</h3>
+        <div class="number" id="domain">Loading...</div>
+    </div>
+
+    <div class="card">
+        <h3>PUBLISHED POSTS</h3>
+        <div class="number" id="postCount">0</div>
+    </div>
+
+    <div class="card">
+        <h3>STATUS</h3>
+        <div class="number">ACTIVE</div>
+    </div>
+
+</section>
+
+
+<section>
+
+    <h2 class="section-title">
+        Latest Security Intelligence
+    </h2>
+
+    <div id="posts">
+        <div class="empty">
+            Loading posts...
+        </div>
+    </div>
+
+</section>
+```
+<script>
+
+const API_URL = "http://127.0.0.1:8000";
+
+async function loadDashboard() {
+
+    try {
+
+        // Get agent information
+        const agentResponse =
+            await fetch(`${API_URL}/api/agent`);
+
+        const agent =
+            await agentResponse.json();
+
+        document.getElementById("agentName").textContent =
+            agent.name;
+
+        document.getElementById("domain").textContent =
+            agent.domain;
+
+
+        // Get published posts
+        const postsResponse =
+            await fetch(`${API_URL}/api/agent/posts`);
+
+        const posts =
+            await postsResponse.json();
+
+        document.getElementById("postCount").textContent =
+            posts.length;
+
+
+        const postsContainer =
+            document.getElementById("posts");
+
+        if (posts.length === 0) {
+
+            postsContainer.innerHTML = `
+                <div class="empty">
+                    No published security intelligence yet.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        postsContainer.innerHTML = posts.map(post => `
+
+            <article class="post">
+
+                <div class="post-header">
+
+                    <div class="post-label">
+                        🛡️ CyberSentinel
+                    </div>
+
+                    <div class="post-date">
+                        ${new Date(post.createdAt).toLocaleString()}
+                    </div>
+
+                </div>
+
+                <div class="post-text">
+                    ${post.text}
+                </div>
+
+                <div class="rationale">
+                    <strong>Why published:</strong>
+                    ${post.rationale}
+                </div>
+
+                <div class="source">
+
+                    <strong>Source:</strong>
+
+                    <a href="${post.sources}"
+                       target="_blank">
+                        ${post.sources}
+                    </a>
+
+                </div>
+
+            </article>
+
+        `).join("");
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Dashboard error:",
+            error
+        );
+
+        document.getElementById("posts").innerHTML = `
+            <div class="empty">
+                Unable to connect to the CyberSentinel API.
+            </div>
+        `;
+
+    }
+
+}
+
+loadDashboard();
+
+</script>
+
+</div>
+
+<script>
+
+const API_BASE = "http://127.0.0.1:8000";
+
+
+async function loadAgent() {
+
+    try {
+
+        const response =
+            await fetch(`${API_BASE}/api/agent`);
+
+        if (!response.ok) {
+            throw new Error("Agent API failed");
+        }
+
+        const agent =
+            await response.json();
+
+        document.getElementById("agentName")
+            .textContent = agent.name;
+
+        document.getElementById("domain")
+            .textContent = agent.domain;
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        document.getElementById("agentName")
+            .textContent = "Offline";
+
+        document.getElementById("domain")
+            .textContent = "Unavailable";
+    }
+}
+
+
+async function loadPosts() {
+
+    const postsContainer =
+        document.getElementById("posts");
+
+    try {
+
+        const response =
+            await fetch(`${API_BASE}/api/agent/posts`);
+
+        if (!response.ok) {
+            throw new Error("Posts API failed");
+        }
+
+        const posts =
+            await response.json();
+
+        document.getElementById("postCount")
+            .textContent = posts.length;
+
+
+        if (posts.length === 0) {
+
+            postsContainer.innerHTML = `
+                <div class="empty">
+                    No published posts yet.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        postsContainer.innerHTML = "";
+
+
+        posts.forEach(post => {
+
+            const article =
+                document.createElement("div");
+
+            article.className = "post";
+
+
+            article.innerHTML = `
+
+                <div class="post-header">
+
+                    <span class="post-label">
+                        🛡️ CyberSentinel
+                    </span>
+
+                    <span class="post-date">
+                        ${post.createdAt}
+                    </span>
+
+                </div>
+
+                <div class="post-text">
+                    ${escapeHTML(post.text)}
+                </div>
+
+                <div class="rationale">
+                    <strong>Editorial rationale:</strong><br>
+                    ${escapeHTML(post.rationale)}
+                </div>
+
+                <div class="source">
+
+                    <strong>Source:</strong>
+
+                    <br>
+
+                    <a
+                        href="${post.sources}"
+                        target="_blank"
+                    >
+                        ${post.sources}
+                    </a>
+
+                </div>
+
+            `;
+
+
+            postsContainer.appendChild(article);
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        postsContainer.innerHTML = `
+            <div class="empty">
+                Unable to connect to the CyberSentinel API.
+            </div>
+        `;
+    }
+}
+
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent = text || "";
+
+    return div.innerHTML;
+}
+
+
+loadAgent();
+
+loadPosts();
+
+</script>
+
+</body>
+</html>
