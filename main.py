@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -34,16 +35,9 @@ initialize_database()
 
 # Start autonomous background scheduler
 start_scheduler()
-@app.get("/")
-
+ @app.get("/")
 def home():
-
-    return {
-        "message": "Autonomous AI Creator is running",
-        "agent": "CyberSentinel",
-        "domain": "AI Security"
-    }
-
+    return FileResponse("dashboard.html")
 @app.get("/api/agent")
 def agent_info():
 
